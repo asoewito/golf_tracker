@@ -18,11 +18,7 @@ import streamlit as st
 
 DB_PATH = "golf_tracker.db"
 
-# ---------------------------------------------------------------------------
 # Club setup
-# ---------------------------------------------------------------------------
-
-# Ordered from shortest/highest-lofted to longest, as requested (60° -> driver)
 CLUBS = [
     "Putter",
     "60° Wedge",
@@ -86,15 +82,71 @@ SKILL_WEIGHTS = {
 
 # Sample drills shown alongside a recommended club, tuned by skill level.
 DRILLS = {
-    "Putting": ["Gate drill from 3ft - build a onsistent stroke path.", 
-                "Make 10 putts from 3ft - focus on starting the ball on line.",
-                "Around the world - set up tees around the hole from 5 feet."],
-    "Intermediate": ["Clock drill: putt 6 balls from 3/6/9 ft around the hole.",
-                     "Lag putting: hit 10 putts from 20–30 ft and track distance from the hole.",
-                     "Pressure putting: make 5 consecutive putts from 5 ft."],
-    "Advanced": ["Lag putting ladder: 20/40/60 ft, focus on speed control.",
-                 "Random-distance putting — change distance every putt.",
-                 "One-putt challenge from 6–10 ft."],
+    "Putting": {
+        "Beginner": ["Gate drill from 3ft - build a onsistent stroke path.", 
+                    "Make 10 putts from 3ft - focus on starting the ball on line.",
+                    "Around the world - set up tees around the hole from 5 feet."],
+        "Intermediate": ["Clock drill: putt 6 balls from 3/6/9 ft around the hole.",
+                        "Lag putting: hit 10 putts from 20–30 ft and track distance from the hole.",
+                         "Pressure putting: make 5 consecutive putts from 5 ft."],
+        "Advanced": ["Lag putting ladder: 20/40/60 ft, focus on speed control.",
+                     "Random-distance putting — change distance every putt.",
+                     "One-putt challenge from 6–10 ft."],
+    },
+    "Wedges": {
+        "Beginner": ["Land 10 balls on a towel 20 yards out, focus on contact.",
+                    "Bump-and-run drill from just off the green.",
+                    "Half-swing wedge shots to a wide landing zone."],
+        "Intermediate": ["Hit to 3 landing zones (30/50/70 yds), track proximity.",
+                        "Spin control drill: same distance, high vs low trajectory.",
+                        "Up-and-down challenge from 3 spots around the green."],
+        "Advanced": ["Trajectory control: same distance, 3 different ball flights.",
+                    "Landing-zone precision from 3 distances, track feet from target.",
+                    "Flop shot and low spinner from the same lie."],
+    },
+    "Short Irons":{
+        "Beginner": ["Half-swing contact drill — ball-then-turf, low tee line.",
+                    "Alignment stick drill for consistent swing path.",
+                    "Target practice: 10 balls at one flag, count solid strikes."],
+        "Intermediate": ["9-shot shape drill: high/low, draw/fade/straight.",
+                        "Distance-matching drill between two clubs (e.g. 8i vs 9i).",
+                        "Divot-direction drill to check swing path consistency."],
+        "Advanced": ["Flighted approach shots into tight pins, track strokes gained.",
+                    "Windy-day simulation: knockdown shots under a low ceiling.",
+                    "Random distance drill — no repeats, adapt shot-to-shot."],
+    },
+    "Mid Irons":{
+        "Beginner": ["Alignment stick drill for swing path, slow-motion reps.",
+                    "Tee-height contact drill for consistent ball-first strikes."],
+        "Intermediate": ["Distance control ladder in 10-yard increments.",
+                        "Compare carry distance across 5i/6i to sharpen club selection."],
+        "Advanced": ["Work a controlled draw and fade on demand.",
+                    "Trajectory windows: low punch vs full flight, same club."],
+    },
+    "Long Irons":{
+        "Beginner": ["Tee it slightly up, focus on solid contact over distance.",
+                    "Hybrid vs long iron comparison — pick your go-to."],
+        "Intermediate": [ "Compare iron vs hybrid dispersion on the range.",
+                        "Fairway lie simulation drill for long-iron contact."],
+        "Advanced": ["Low punch shots and stinger practice for course management.",
+                    "Long-iron approach into a tight target, track proximity."],
+    },
+    "Woods":{
+        "Beginner": ["Sweep drill off a low tee — focus on the strike, not power.",
+                    "Fairway wood off the deck, focus on ball-first contact."],
+        "Intermediate": ["Fairway wood accuracy: 10 balls at a target flag.",
+                        "3-wood vs 5-wood distance-gap check."],
+        "Advanced": ["Work both a fade and draw off the deck.",
+                    "Low-trajectory fairway wood into the wind."],
+    },
+    "Driver":{
+        "Beginner": ["Tee height and ball position drill for consistent contact.",
+                    "Slow-tempo swings focused on balance, not distance."],
+        "Intermediate": ["Fairway-finder: track % hit into a 30-yard-wide target.",
+                        "Tempo drill: 3/4 swing for consistency before adding speed."],
+        "Advanced": ["Launch monitor session: optimize launch angle and spin rate.",
+                    "Shot-shape-on-demand: draw and fade off the tee."],
+    },
 }
 
 
