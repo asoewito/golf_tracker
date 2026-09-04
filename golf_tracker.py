@@ -8,7 +8,7 @@ tailored to their skill level.
 Run with:
     streamlit run golf_tracker.py
 """
-
+import random
 import sqlite3
 from datetime import date, timedelta, datetime
 from contextlib import contextmanager
@@ -86,42 +86,17 @@ SKILL_WEIGHTS = {
 
 # Sample drills shown alongside a recommended club, tuned by skill level.
 DRILLS = {
-    "Putting": {
-        "Beginner": "Gate drill from 3 ft — build a consistent stroke path.",
-        "Intermediate": "Clock drill: putt 6 balls from 3/6/9 ft around the hole.",
-        "Advanced": "Lag putting ladder: 20/40/60 ft, focus on speed control.",
-    },
-    "Wedges": {
-        "Beginner": "Land 10 balls on a towel 20 yards out, focus on contact.",
-        "Intermediate": "Hit to 3 landing zones (30/50/70 yds), track proximity.",
-        "Advanced": "Trajectory control: same distance, 3 different ball flights.",
-    },
-    "Short Irons": {
-        "Beginner": "Half-swing contact drill — ball-then-turf, low tee line.",
-        "Intermediate": "9-shot shape drill: high/low, draw/fade/straight.",
-        "Advanced": "Flighted approach shots into tight pins, track strokes gained.",
-    },
-    "Mid Irons": {
-        "Beginner": "Alignment stick drill for swing path, slow-motion reps.",
-        "Intermediate": "Distance control ladder in 10-yard increments.",
-        "Advanced": "Work a controlled draw and fade on demand.",
-    },
-    "Long Irons": {
-        "Beginner": "Tee it slightly up, focus on solid contact over distance.",
-        "Intermediate": "Compare iron vs hybrid dispersion on the range.",
-        "Advanced": "Low punch shots and stinger practice for course management.",
-    },
-    "Woods": {
-        "Beginner": "Sweep drill off a low tee — focus on the strike, not power.",
-        "Intermediate": "Fairway wood accuracy: 10 balls at a target flag.",
-        "Advanced": "Work both a fade and draw off the deck.",
-    },
-    "Driver": {
-        "Beginner": "Tee height and ball position drill for consistent contact.",
-        "Intermediate": "Fairway-finder: track % hit into a 30-yard-wide target.",
-        "Advanced": "Launch monitor session: optimize launch angle and spin rate.",
-    },
+    "Putting": ["Gate drill from 3ft - build a onsistent stroke path.", 
+                "Make 10 putts from 3ft - focus on starting the ball on line.",
+                "Around the world - set up tees around the hole from 5 feet."],
+    "Intermediate": ["Clock drill: putt 6 balls from 3/6/9 ft around the hole.",
+                     "Lag putting: hit 10 putts from 20–30 ft and track distance from the hole.",
+                     "Pressure putting: make 5 consecutive putts from 5 ft."],
+    "Advanced": ["Lag putting ladder: 20/40/60 ft, focus on speed control.",
+                 "Random-distance putting — change distance every putt.",
+                 "One-putt challenge from 6–10 ft."],
 }
+
 
 
 # ---------------------------------------------------------------------------
