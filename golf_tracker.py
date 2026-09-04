@@ -276,7 +276,8 @@ def get_recommendations(skill_level: str, df: pd.DataFrame, top_n: int = 3):
     scored.sort(key=lambda x: x[0], reverse=True)
     recommendations = []
     for score, club, category, overdue_days in scored[:top_n]:
-        drill = DRILLS[category][skill_level]
+        rng = random.Random(f"{date.today()} -- {club} -- {skill_level}")
+        drill = rng.choice(DRILLS[category][skill_level])
         if overdue_days >= 999:
             recency_note = "never logged"
         elif overdue_days == 0:
