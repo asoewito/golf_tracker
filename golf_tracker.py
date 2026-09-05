@@ -414,12 +414,6 @@ def main():
         page_title="Golf Practice Tracker", 
         page_icon="⛳", 
         layout="wide")
-    st.markdown("""
-    <style>
-        .stApp{
-            background-color: #A1D99B;
-        }
-        
             
     init_db()
 
