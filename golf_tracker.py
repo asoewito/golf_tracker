@@ -401,13 +401,33 @@ def apply_style():
             
             
 # ---------------------------------------------------------------------------
-# Streamlit UI
+# helper metds
 # ---------------------------------------------------------------------------
 
 def week_dates(reference: date) -> list:
     monday = reference - timedelta(days=reference.weekday())
     return [monday + timedelta(days=i) for i in range(7)]
+    
+def render_level_card(total_sessions: int):
+    info = get_level_info(total_sessions)
+    st.sidebar.markdown(f"### Level {info['level_num']}: {info['title']})
+    st.sidebar.progress(info["progress"])
+    if info["is_max"]:
+        st.sidebar.caption("Max level reached - legendary status.")
+    else:
+        st.sidebar.caption(
+            f"{info['sessions_to_next']} more session(s) to reach"
+            f"\"{info['next_title']}\""
+        )
 
+def maybe_celebrate_level_up(old_count: int, new_count: int):
+    old_level = get_level_info(old_count)["level_num"]
+    new_info = get_level_info(new_count)
+    if new_info["level_num"] > old_level:
+        st.balloons()
+        st.success(f"Level up! You're now Level {new_info['level_num']}: {new_info['title']}")
+
+# pages
 
 def main():
     st.set_page_config(
