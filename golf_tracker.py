@@ -410,7 +410,7 @@ def week_dates(reference: date) -> list:
     
 def render_level_card(total_sessions: int):
     info = get_level_info(total_sessions)
-    st.sidebar.markdown(f"### Level {info['level_num']}: {info['title']})
+    st.sidebar.markdown(f"### Level {info['level_num']}: {info['title']}")
     st.sidebar.progress(info["progress"])
     if info["is_max"]:
         st.sidebar.caption("Max level reached - legendary status.")
