@@ -62,7 +62,7 @@ CLUB_CATEGORY = {
 }
 
 DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
+SKILL_LEVELS = ["Beginner", "Intermediate", "Advanced"]
 # Skill-level priority weights per category (higher = more emphasis).
 # Drives which clubs get recommended when several are equally overdue.
 SKILL_WEIGHTS = {
@@ -79,7 +79,16 @@ SKILL_WEIGHTS = {
         "Long Irons": 3, "Woods": 3, "Driver": 4,
     },
 }
-
+LEVELS = [
+    (0, "Just Starting"),
+    (5, "Consistent Practicer"),
+    (10, "Weekend Warrior"),
+    (20, "Course Regular"),
+    (35, "Sharp Shooter"),
+    (50, "Low Handicapper"),
+    (75, "Scratch Golfer"),
+    (100, "Tour Ready),
+]
 # Sample drills shown alongside a recommended club, tuned by skill level.
 DRILLS = {
     "Putting": {
@@ -191,6 +200,18 @@ def init_db():
             )
             """
         )
+        conn.execute(
+            """
+            CREATE TABLE IF NOT EXISTS yardages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            club TEXT NOT NULL,
+            yardage INTEGER,
+            UNIQUE(user_id, club),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+            )
+            """
+        )
 
 
 def get_or_create_user(name: str, skill_level: str) -> int:
@@ -207,7 +228,10 @@ def get_or_create_user(name: str, skill_level: str) -> int:
         )
         return cur.lastrowid
 
-
+def update_skill_level(user_id: int, skill_level:str):
+    with get_conn() as conn:
+        conn.execute("UPDATE users SET skill_level = ? WHERE id = ?", (skill_level, user_id))
+        
 def log_practice(user_id: int, practice_date: date, club: str, minutes: int, notes: str):
     with get_conn() as conn:
         conn.execute(
@@ -228,6 +252,24 @@ def get_sessions_df(user_id: int) -> pd.DataFrame:
     if not df.empty:
         df["practice_date"] = pd.to_datetime(df["practice_date"]).dt.date
     return df
+
+def get_yardages(user_id: int) --> dict:
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT club, yardage FROM yardages WHERE user_id = ?", (user_id)
+        ).fetchall()
+    return {row["club"]: row["yardage"] for row in rows}
+
+def save_yardages(user_id: int, club_yardages: dict):
+    with get_conn() as conn:
+        for club, yardage in club_yardages.items():
+            conn.execute(
+                """
+                INSERT INTO yardages (user_id, club, yardage) VALUES (?, ?, ?)
+                ON CONFLICT(user_id, club) DO UPDATE SET yardage = excluded.yardage
+                """,
+                (user_id, club, yardage),
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -254,7 +296,7 @@ def compute_streak(practice_dates: set) -> int:
 def days_since_last_practice(df: pd.DataFrame, club: str) -> int:
     club_rows = df[df["club"] == club]
     if club_rows.empty:
-        return 999  # never practiced -> maximally overdue
+        return 999 
     last = club_rows["practice_date"].max()
     return (date.today() - last).days
 
@@ -267,8 +309,6 @@ def get_recommendations(skill_level: str, df: pd.DataFrame, top_n: int = 3):
     for club in CLUBS:
         category = CLUB_CATEGORY[club]
         overdue_days = days_since_last_practice(df, club)
-        # Cap overdue contribution so a never-practiced club doesn't dominate
-        # everything forever; still ranks high, just not absurdly so.
         overdue_score = min(overdue_days, 21)
         score = weights[category] * (1 + overdue_score / 7)
         scored.append((score, club, category, overdue_days))
@@ -293,8 +333,34 @@ def get_recommendations(skill_level: str, df: pd.DataFrame, top_n: int = 3):
             }
         )
     return recommendations
-
-
+def get_level_info(total_sessions: int) --> dict:
+    idx = 0
+    for i, (threshold, _title) in enumerate(LEVELS):
+        if total_sessions >= threshold:
+            idx = i
+    current_threshold, current_title = LEVELS[idx]
+    if idx+1 < len(LEVELS):
+        next_threshold, next_title = LEVELS[idx + 1]
+        span = next_threshold - current_threshold
+        progress = (total_sessions - current_threshold) / span if span else 1.0
+        sessions_to_next = next_threshold - total_sessions
+        is_max = False
+    else:
+        next_title = None
+        progress = 1.0
+        sessions_to_next = 0
+        is_max = True
+    return {
+        "level_num": idx + 1,
+        "title": current_title,
+        "next_title": next_title,
+        "progress": min(max(progress,0.0),1,0),
+        "sessions_to_next": sessions_to_next,
+        "is_max": is_max,
+    }
+# ---------------------------------------------------------------------------
+# Streamlit UI
+# ---------------------------------------------------------------------------
 # ---------------------------------------------------------------------------
 # Streamlit UI
 # ---------------------------------------------------------------------------
@@ -305,7 +371,17 @@ def week_dates(reference: date) -> list:
 
 
 def main():
-    st.set_page_config(page_title="Golf Practice Tracker", page_icon="⛳", layout="wide")
+    st.set_page_config(
+        page_title="Golf Practice Tracker", 
+        page_icon="⛳", 
+        layout="wide")
+    st.markdown("""
+    <style>
+        .stApp{
+            background-color: #A1D99B;
+        }
+        
+            
     init_db()
 
     st.title("⛳ Golf Practice Tracker")
