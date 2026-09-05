@@ -87,7 +87,7 @@ LEVELS = [
     (35, "Sharp Shooter"),
     (50, "Low Handicapper"),
     (75, "Scratch Golfer"),
-    (100, "Tour Ready),
+    (100, "Tour Ready"),
 ]
 # Sample drills shown alongside a recommended club, tuned by skill level.
 DRILLS = {
