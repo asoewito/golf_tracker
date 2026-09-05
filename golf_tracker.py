@@ -358,9 +358,48 @@ def get_level_info(total_sessions: int) --> dict:
         "sessions_to_next": sessions_to_next,
         "is_max": is_max,
     }
-# ---------------------------------------------------------------------------
-# Streamlit UI
-# ---------------------------------------------------------------------------
+# styling
+def apply_style():
+    st.markdown(
+        """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        html,body, [class*="css"] {
+            font-family: 'Poppins', sans-serif;
+        }
+        .stApp {
+            background-color: #A1D99B
+        }
+        h1,h2,h3 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            color: #1E4620;
+        }
+        section[data-testid = "stSidebar"] {
+            background-color: #DCEEDC;
+        }
+        div[data-testid="stMetric"] {
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        div[data-testid="stForm"] {
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .stButton>button{
+            border-radius: 8px;
+            font_weight: 600;
+        }
+        </style>
+        """,
+        unsafe_allow_html = True,
+    )
+            
+            
 # ---------------------------------------------------------------------------
 # Streamlit UI
 # ---------------------------------------------------------------------------
