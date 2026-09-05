@@ -435,7 +435,7 @@ def page_dashboard(user_id: int, name: str, skill_level: str):
     total_Sessions = len(df)
     if total_sessions == 0:
         st.header(f"Welcome, {name}!")
-        st.write(f"You're set up as an *{skill_level}*.)
+        st.write(f"You're set up as an *{skill_level}*.")
         st.info("Log your first session from the *log practice* tab in the menu.")
         return
     st.header(f"Welcome back, {name}!")
