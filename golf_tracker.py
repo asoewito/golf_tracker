@@ -253,7 +253,7 @@ def get_sessions_df(user_id: int) -> pd.DataFrame:
         df["practice_date"] = pd.to_datetime(df["practice_date"]).dt.date
     return df
 
-def get_yardages(user_id: int) --> dict:
+def get_yardages(user_id: int) -> dict:
     with get_conn() as conn:
         rows = conn.execute(
             "SELECT club, yardage FROM yardages WHERE user_id = ?", (user_id)
