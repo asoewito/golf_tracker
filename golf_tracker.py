@@ -333,7 +333,7 @@ def get_recommendations(skill_level: str, df: pd.DataFrame, top_n: int = 3):
             }
         )
     return recommendations
-def get_level_info(total_sessions: int) --> dict:
+def get_level_info(total_sessions: int) -> dict:
     idx = 0
     for i, (threshold, _title) in enumerate(LEVELS):
         if total_sessions >= threshold:
