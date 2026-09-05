@@ -428,7 +428,43 @@ def maybe_celebrate_level_up(old_count: int, new_count: int):
         st.success(f"Level up! You're now Level {new_info['level_num']}: {new_info['title']}")
 
 # pages
+def page_dashboard(user_id: int, name: str, skill_level: str):
+    df = st.session_state["_df_cache"]
+    practice_dates = set(df["practice_date"]) if not df.empty else set()
+    streak = compute_streak(practice_dates)
+    total_Sessions = len(df)
+    if total_sessions == 0:
+        st.header(f"Welcome, {name}!")
+        st.write(f"You're set up as an *{skill_level}*.)
+        st.info("Log your first session from the *log practice* tab in the menu.")
+        return
+    st.header(f"Welcome back, {name}!")
+    col1,col2,col3 = st.columns(3)
+    col1.metric("Current Streak", f"{streak} day{'s' if streak != 1 else ''}")
+    col2.metric("Sessions Logged", total_sessions)
+    col3.metric("Skill Level", skill_level)
+    st.divider()
+    st.subheader("This Week")
+    dates = week_dates(date.today())
+    cols = st.columns(7)
+    for i,d in enumerate(dates):
+        practiced = d in practice_dates
+        with cols[i]:
+            marker = "✅" if practiced else ("📍" if d == date.today() else "▫️")
+            st.markdown(f"**{DAYS[i][:3]}**")
+            st.markdown(f"{marker} {d.strftime('%m/%d')}")
+    st.divider()
+    st.subheader("Top Recomendation")
+    top_rec = get_recommendations(skill_level, df, top_n=1)[0]
+    with st.container(border=True):
+        st.markdown(f"**{top_rec['club']}** · _{top_rec['category']}_")
+        st.write(top_rec["drill"])
+        st.caption(top_rec["recency_note"])
+    st.caption("See the full list under **Practice Next** in the menu.")
 
+
+
+#main
 def main():
     st.set_page_config(
         page_title="Golf Practice Tracker", 
